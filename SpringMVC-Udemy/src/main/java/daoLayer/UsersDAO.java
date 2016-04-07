@@ -8,12 +8,16 @@ import domainLayer.User;
 
 public interface UsersDAO {
 
-	public abstract void createUser(User user);
+	void saveUser(User user);
+	
+	void updateUser(User user);
 
-	public abstract boolean exists(String username);
+	boolean exists(String username);
 
-	public abstract List<User> getAllUsers();
+	List<User> getAllUsers();
 
-	public abstract User getUser(String username);
-
+	User getUser(String username);
+	
+	void deleteUser(User user);
+	
 }

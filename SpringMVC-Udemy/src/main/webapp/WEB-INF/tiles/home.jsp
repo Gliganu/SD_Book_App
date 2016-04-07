@@ -3,70 +3,38 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-<c:choose>
-	<c:when test="${hasOffer}">
-		<a href=<c:url value="/addOffer"/>> Edit/Delete your current offer
-		</a>
-	</c:when>
 
-	<c:otherwise>
-		<a href=<c:url value="/addOffer"/>>Click here to add new offer </a>
-	</c:otherwise>
 
-</c:choose>
+<p>
+	<h3>${message}</h3>
+</p>
 
-&nbsp;
+<h2 class="error">${errorMsg}</h2>
+<h2 class="valid">${successMsg}</h2>
 
 
 <sec:authorize access="hasRole('ROLE_ADMIN')">
-	<a href=<c:url value="/admin "/>>Admin Page</a>
+	<p>
+		<a href=<c:url value="/viewAllCustomers "/>>View All Users (Admin) </a>
+	</p>
+
 </sec:authorize>
+
 
 <sec:authorize access="isAuthenticated()">
-	<a href=<c:url value="/allMessages "/>>Messages(<span
-		id="numberMessages">0</span>)
-	</a>
+
+<p>
+	<a href=<c:url value="/books "/>>View Books</a>
+</p>
+
 </sec:authorize>
 
-<br/><br/>
 
-<table border=1 width=100%>
-	<tr>
-		<th>Name</th>
-		<th>Contact</th>
-		<th>Offer</th>
-	</tr>
-
-	<c:forEach var="offer" items="${offerList}">
-		<tr>
-			<td>${offer.user.name}</td>
-			<td><a href="<c:url value='/message?uid=${offer.username}'/>">Contact</a></td>
-			<td>${offer.text}</td>
-		</tr>
-	</c:forEach>
-
-</table>
-
-
-<script type="text/javascript">
-	function updateMessageLink(data) {
-		$("#numberMessages").text(data.number);		
-	}
-
-	function onLoad() {
-		updatePage();		
-		//window.setInterval(updatePage, 5000);
-	}
+<sec:authorize access="!isAuthenticated()">
 	
-	function updatePage(){
-		$.getJSON("<c:url value='/getMessages'/>", updateMessageLink);
-	}
+	<h2>Welcome !</h2>
 
-	$(document).ready(onLoad());
-</script>
-
-
-
+</sec:authorize>
 
 
 

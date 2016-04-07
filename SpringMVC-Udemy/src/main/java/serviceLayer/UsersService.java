@@ -15,31 +15,35 @@ public class UsersService {
 	@Autowired
 	private UsersDAO usersDao;
 	
+
 	
-	public void createUser(User user){
-		usersDao.createUser(user);
+	public void saveUser(User user){
+		usersDao.saveUser(user);
+	}
+	
+	public void updateUser(User user){
+		usersDao.updateUser(user);
 	}
 
+	public void deleteUser(String username){
+		User user = getUser(username);
+	
+		usersDao.deleteUser(user);
+	}
 
 	public boolean exists(String username) {
 		return usersDao.exists(username);
 	}
 
 
-	@Secured("ROLE_ADMIN")
 	public List<User> getAllUsers() {
 		return usersDao.getAllUsers();
 	}
-	
 	
 	
 	public User getUser(String username){
 		return usersDao.getUser(username);
 		
 	}
-
-
-	
-
 
 }

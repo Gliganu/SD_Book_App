@@ -89,7 +89,28 @@
 		<put-attribute name="title" value="Your Messages"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/tiles/allMessages.jsp"></put-attribute>
 	</definition>
+	
 
+	<definition name="books" extends="offers.base">
+		<put-attribute name="title" value="Books"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/books.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="updateBook" extends="offers.base">
+		<put-attribute name="title" value="Books"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/updateBook.jsp"></put-attribute>
+	</definition>
+		
+	<definition name="viewAllCustomers" extends="offers.base">
+		<put-attribute name="title" value="Books"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/viewAllCustomers.jsp"></put-attribute>
+	</definition>
+	
+		
+	<definition name="updateUserInfo" extends="offers.base">
+		<put-attribute name="title" value="Books"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/updateUserInfo.jsp"></put-attribute>
+	</definition>
 
 
 </tiles-definitions>

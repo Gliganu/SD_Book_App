@@ -7,7 +7,20 @@
 <p>
 
 
-<a class="title" href= <c:url value="/"/> > Offers </a> <br/> <br/>
+
+<sec:authorize access="hasRole('ROLE_ADMIN')">
+	<a class="title" href= <c:url value="/"/> > Bank App ( Admin ) </a> <br/> <br/>
+</sec:authorize>
+
+<sec:authorize access="isAuthenticated()">
+	<a class="title" href= <c:url value="/"/> > Bank App </a> <br/> <br/>
+</sec:authorize>
+
+<sec:authorize access="!isAuthenticated()">
+	<a class="title" href= <c:url value="/"/> > Bank App </a> <br/> <br/>
+</sec:authorize>
+
+
 
 <sec:authorize access="!isAuthenticated()"> 
 <a class="login" href= <c:url value="/login"/> >Click here to log in</a> <br/> <br/>
@@ -19,3 +32,4 @@
 </sec:authorize>
 
 </p>
+

@@ -11,8 +11,8 @@
 		
 		<security:authentication-provider>
 			<security:jdbc-user-service data-source-ref="dataSource"
-				authorities-by-username-query='SELECT username,authority FROM springtutorial.users where binary username= ?'
-				users-by-username-query='SELECT username,password,enabled FROM springtutorial.users where binary username=?'
+				authorities-by-username-query='SELECT username,authority FROM bankschema.users where binary username= ?'
+				users-by-username-query='SELECT username,password,enabled FROM bankschema.users where binary username=?'
 				id="jdbcUserService" />
 			<security:password-encoder ref="passwordEncoder"></security:password-encoder>
 		</security:authentication-provider>
@@ -21,12 +21,14 @@
 
 
 	<security:http use-expressions="true">
-		<security:intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />
-		<security:intercept-url pattern="/addOffer" access="isAuthenticated()" />
-		<security:intercept-url pattern="/createOffer" access="isAuthenticated()" />
-		<security:intercept-url pattern="/getMessages" access="isAuthenticated()" />
-		<security:intercept-url pattern="/allMessages" access="isAuthenticated()" />
-		<security:intercept-url pattern="/sendMessage" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/viewAllCustomers" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/deleteUser" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/updateUserInfo" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/updateBook" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/createBook" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/deleteBook" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/books" access="isAuthenticated()" />
+		<security:intercept-url pattern="/sellBook" access="isAuthenticated()" />
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/login" access="permitAll"/>
 		<security:intercept-url pattern="/logOut" access="permitAll"/>

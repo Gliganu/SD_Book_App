@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import domainLayer.User;
 
 @Component("usersDAO")
-@Repository //Asta il folosesti sa transformi Hibernate Ex in Spring Ex.
+@Repository 
 @Transactional
 public class UsersDAOHibernate implements UsersDAO{
 	
@@ -34,16 +34,22 @@ public class UsersDAOHibernate implements UsersDAO{
 	
 	@Override
 	@Transactional
-	public void createUser(User user) {
+	public void saveUser(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		session().save(user);
 	}
+	
+	@Override
+	@Transactional
+	public void updateUser(User user) {
+		session().update(user);
+	}
+
 
 	@Override
 	public boolean exists(String username) {
 		Criteria crit = session().createCriteria(User.class);
-		//crit.add(Restrictions.eq("username", username)); //Metoda asta e ok daca you query for columns which are not PK
-		crit.add(Restrictions.idEq(username)); // Asta e cand faci query pe coloana care e PK
+		crit.add(Restrictions.idEq(username)); 
 		User user=(User) crit.uniqueResult();
 		return user != null;
 	}
@@ -61,5 +67,11 @@ public class UsersDAOHibernate implements UsersDAO{
 		User user=(User) crit.uniqueResult();
 		return user;
 	}
+
+	@Override
+	public void deleteUser(User user) {
+		session().delete(user);
+	}
+
 
 }
