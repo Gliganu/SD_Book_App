@@ -7,8 +7,11 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import daoLayer.BooksDAO;
+import daoLayer.UsersDAO;
 import domainLayer.Book;
 import domainLayer.OperationResult;
 import domainLayer.SearchQuery;
@@ -17,86 +20,65 @@ import domainLayer.Status;
 @Service("booksService")
 public class BookService {
 
-	private List<Book> bookList;
+	@Autowired
+	private BooksDAO booksDAO;
 
 	public List<Book> getBooks(SearchQuery searchQuery) {
 
-		if (bookList == null) {
-			bookList = new ArrayList<>();
-
-			for (int i = 0; i < 10; i++) {
-				bookList.add(new Book("Title " + i, "Genre " + i, "Author " + i, i, i * 10));
-			}
-		}
-		
-		String searchedAuthor = searchQuery.getAuthor() == null ? "" : searchQuery.getAuthor();
-		String searchedTitle = searchQuery.getTitle() == null ? "" : searchQuery.getTitle();
-		String searchedGenre = searchQuery.getGenre() == null ? "" : searchQuery.getGenre() ;
-		
-		List<Book> filteredBooks = bookList.stream().filter(book->book.getAuthor().contains(searchedAuthor) && 
-						book.getTitle().contains(searchedTitle) && book.getGenre().contains(searchedGenre)).collect(Collectors.toList());;
-
-		return filteredBooks;
+		return booksDAO.getBooks(searchQuery);
 
 	}
 
-	public Book findBook(List<Book> bookList, int id) {
+	public Book findBook(String id) {
 
-		for (Book book : bookList) {
-			if (book.getId() == id) {
-				return book;
-			}
-		}
-
-		return null;
+		return booksDAO.findBook(id);
 
 	}
 
-	public OperationResult sellBook(int id) {
+	public OperationResult sellBook(String id) {
 
-		Book book = findBook(bookList, id);
+		Book book = findBook(id);
 
 		if (book.getQuantity() == 0) {
 			return new OperationResult(Status.FAILURE, "Can't sell " + book.getTitle() + ". Out of stock");
 		}
 
 		book.setQuantity(book.getQuantity() - 1);
-
+			
+		updateBook(book);
+		
 		return new OperationResult(Status.SUCCESS, "Book " + book.getTitle() + " was sold.");
 
 	}
 
-	public OperationResult deleteBook(int id) {
+	public OperationResult deleteBook(String id) {
 
-		Book book = findBook(bookList, id);
-		
-		boolean removeStatus = bookList.remove(book);
-		
-		if(removeStatus){
-			return new OperationResult(Status.SUCCESS, "Book " + book.getTitle() + " was deleted.");
-		}
-		
-		return new OperationResult(Status.FAILURE, "Unknown error occurred.");
+		return booksDAO.deleteBook(id);
 
-	}
-
-	public Book getBookById(int id) {
-		
-		return findBook(bookList, id);
 	}
 	
 	public OperationResult createBook(Book book){
-		bookList.add(book);
-		
-		return new OperationResult(Status.SUCCESS,"Book "+book.getTitle()+" created successfully");
-	}
+		return booksDAO.createBook(book);	}
 
+	
 	public OperationResult updateBook(Book book) {
 
-		deleteBook(book.getId());
-		createBook(book);
+		return booksDAO.updateBook(book);
+				
+	}
+	
+	public boolean checkIdExists(String id){
+		return booksDAO.checkIdExists(id);
+	}
+	
+	public ArrayList<Book> getOutOfStockBooks(){
 		
-		return new OperationResult(Status.SUCCESS,"Book "+book.getTitle()+" updated successfully");
+		List<Book> bookList = getBooks(new SearchQuery());
+		
+		List<Book> collect = bookList.stream().filter(book->book.getQuantity() == 0).collect(Collectors.toList());
+		
+		return (ArrayList<Book>) collect;
+		
 	}
 
 

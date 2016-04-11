@@ -7,26 +7,50 @@
 
 
 
-	<security:authentication-manager>
-		
+	<security:authentication-manager id="dao-auth">
+		<!-- 
 		<security:authentication-provider>
 			<security:jdbc-user-service data-source-ref="dataSource"
 				authorities-by-username-query='SELECT username,authority FROM bankschema.users where binary username= ?'
 				users-by-username-query='SELECT username,password,enabled FROM bankschema.users where binary username=?'
 				id="jdbcUserService" />
 			<security:password-encoder ref="passwordEncoder"></security:password-encoder>
-		</security:authentication-provider>
-
+		</security:authentication-provider>  -->
+		
+		<security:authentication-provider user-service-ref="usersService">
+		</security:authentication-provider> 
+	
 	</security:authentication-manager>
 
-
-	<security:http use-expressions="true">
+     <bean id="usersService"
+        class="serviceLayer.UsersService" />
+        
+ 	<!-- <http authentication-manager-ref="jdbc-auth"
+        access-decision-manager-ref="accessDecisionManager"> 
+        <intercept-url pattern="/emp/**" access="Admin" />
+        <form-login login-page="/login" authentication-failure-url="/denied"
+            username-parameter="username" password-parameter="password"
+            default-target-url="/home" />
+        <logout invalidate-session="true" logout-success-url="/login"
+            logout-url="/j_spring_security_logout" />
+        <access-denied-handler error-page="/denied"/>
+        <session-management invalid-session-url="/login">
+            <concurrency-control max-sessions="1"
+                expired-url="/login" />
+        </session-management>
+    </http>  -->
+    
+    
+    
+	<security:http use-expressions="true" authentication-manager-ref="dao-auth" >
 		<security:intercept-url pattern="/viewAllCustomers" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/deleteUser" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/updateUserInfo" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/updateBook" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/createBook" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/deleteBook" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/chooseExportMethod" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/generateReport" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/books" access="isAuthenticated()" />
 		<security:intercept-url pattern="/sellBook" access="isAuthenticated()" />
 		<security:intercept-url pattern="/" access="permitAll" />
@@ -43,7 +67,7 @@
 		<security:logout logout-success-url="/logOut" />
 		<security:access-denied-handler error-page="/accessDenied" />
 		<security:remember-me key="offersAppKey"
-			user-service-ref="jdbcUserService" />
+			user-service-ref="usersService" />
 	</security:http>
 
 

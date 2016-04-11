@@ -1,52 +1,55 @@
 package domainLayer;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "users")
+@XmlRootElement(name = "user")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -3502744983433694888L;
 
 	@Id
-	@Size(min=3, max=15)
-	@Pattern(regexp="^\\w{3,}$")
+	@Size(min = 3, max = 15)
+	@Pattern(regexp = "^\\w{3,}$")
+	@XmlAttribute
 	private String username;
 
-	@Pattern(regexp="^\\S+$")
-	@Size(min=4)
+	@Pattern(regexp = "^\\S+$")
+	@Size(min = 4)
+	@XmlAttribute
 	private String password;
 
 	@NotEmpty
+	@XmlAttribute
 	private String name;
-	
+
 	@NotNull
+	@XmlElement
 	private long personalCode;
-	
+
 	@NotEmpty
+	@XmlAttribute
 	private String address;
 
+	@XmlAttribute
 	private String authority;
+
+	@XmlElement
 	private boolean enabled = false;
-	
+
 	public User() {
 
 	}

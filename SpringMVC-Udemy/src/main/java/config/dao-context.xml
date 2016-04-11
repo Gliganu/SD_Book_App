@@ -7,8 +7,8 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-	<context:component-scan base-package="daoLayer,serviceLayer"></context:component-scan>
 	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="daoLayer,serviceLayer"></context:component-scan>
 	<tx:annotation-driven />
 
 
@@ -35,8 +35,26 @@
 
 	<bean id="exceptionTranslator"
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"></bean>
+	
+	<bean id="XMLConverter" class="daoLayer.XMLConverter">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+	</bean>
+	
+	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+			<!-- <property name="mappingLocation" value="classpath:config/xmlMapping.xml" 
+				/> -->
+			<property name="targetClasses">
+				<array>
+					<value>domainLayer.UserBundle</value>
+					<value>domainLayer.User</value>
+					<value>domainLayer.BookBundle</value>
+					<value>domainLayer.Book</value>
+				</array>
+			</property>
+		</bean>
 
-
+	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
 		<property name="url" value="${jdbc.url}" />

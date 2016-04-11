@@ -9,8 +9,9 @@
 
 
 	<context:annotation-config></context:annotation-config>
-	<context:component-scan base-package="serviceLayer"></context:component-scan>
+	<context:component-scan base-package="daoLayer,serviceLayer"></context:component-scan>
 	
+	 	
 	
 </beans>
 

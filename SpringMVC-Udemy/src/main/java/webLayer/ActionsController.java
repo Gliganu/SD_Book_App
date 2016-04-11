@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import domainLayer.SearchQuery;
 import domainLayer.Status;
 import domainLayer.User;
 import serviceLayer.BookService;
+import serviceLayer.Exporter;
 import serviceLayer.UsersService;
 
 @Controller
@@ -27,6 +29,8 @@ public class ActionsController {
 
 	private static String BOOKS_PAGE = "books";
 	private static String UPDATE_BOOK_PAGE = "updateBook";
+	private static String CREATE_BOOK_PAGE = "createBook";
+	private static String GENERATE_REPORT_PAGE = "generateReport";
 	private static String ALL_USERS_PAGE = "viewAllCustomers";
 	private static String UPDATE_USER_INFO_PAGE = "updateUserInfo";
 
@@ -42,28 +46,27 @@ public class ActionsController {
 	public String showBooks(Model model, Principal principal) {
 
 		List<Book> books = booksService.getBooks(new SearchQuery());
-		
-		model.addAttribute("searchQuery",new SearchQuery());
+
+		model.addAttribute("searchQuery", new SearchQuery());
 		model.addAttribute("books", books);
 
 		return BOOKS_PAGE;
 	}
-	
+
 	@RequestMapping(value = "/books", method = RequestMethod.POST)
-	public String showBooksPost(@Valid SearchQuery searchQuery,BindingResult result, Model model, Principal principal) {
+	public String showBooksPost(@Valid SearchQuery searchQuery, BindingResult result, Model model,
+			Principal principal) {
 
 		List<Book> books = booksService.getBooks(searchQuery);
-		
-		model.addAttribute("searchQuery",searchQuery);
+
+		model.addAttribute("searchQuery", searchQuery);
 		model.addAttribute("books", books);
 
 		return BOOKS_PAGE;
 	}
 
-
 	@RequestMapping(value = "/sellBook", method = RequestMethod.GET)
-	public String sellBook(@RequestParam(value = "id", required = true) int id,
-	 Model model, Principal principal) {
+	public String sellBook(@RequestParam(value = "id", required = true) String id, Model model, Principal principal) {
 
 		OperationResult result = booksService.sellBook(id);
 
@@ -77,7 +80,7 @@ public class ActionsController {
 	}
 
 	@RequestMapping(value = "/deleteBook", method = RequestMethod.GET)
-	public String deleteBook(@RequestParam(value = "id", required = true) int id, Model model, Principal principal) {
+	public String deleteBook(@RequestParam(value = "id", required = true) String id, Model model, Principal principal) {
 
 		OperationResult result = booksService.deleteBook(id);
 
@@ -87,13 +90,13 @@ public class ActionsController {
 			model.addAttribute("successMsg", result.getMessage());
 		}
 
-		return showBooks(model,principal);
+		return showBooks(model, principal);
 	}
 
 	@RequestMapping(value = "/updateBook", method = RequestMethod.GET)
-	public String updateBook(@RequestParam(value = "id", required = true) int id, Model model, Principal principal) {
+	public String updateBook(@RequestParam(value = "id", required = true) String id, Model model, Principal principal) {
 
-		Book book = booksService.getBookById(id);
+		Book book = booksService.findBook(id);
 
 		model.addAttribute("book", book);
 
@@ -107,15 +110,20 @@ public class ActionsController {
 
 		model.addAttribute("book", book);
 
-		return UPDATE_BOOK_PAGE;
+		return CREATE_BOOK_PAGE;
 	}
 
 	@RequestMapping(value = "/createBook", method = RequestMethod.POST)
 	public String createBookPost(@Valid Book book, BindingResult result, Model model) {
 
 		if (result.hasErrors()) {
-			return UPDATE_BOOK_PAGE;
+			return CREATE_BOOK_PAGE;
 		} else {
+
+			if (booksService.checkIdExists(book.getId())) {
+				result.rejectValue("id", "DuplicateKey.book.id");
+				return CREATE_BOOK_PAGE;
+			}
 
 			OperationResult opResult = booksService.createBook(book);
 			model.addAttribute("successMsg", opResult.getMessage());
@@ -169,15 +177,14 @@ public class ActionsController {
 
 		if (username.equals(principal.getName())) {
 			model.addAttribute("errorMsg", "Cannot delete your own account");
-			return viewAllUsers(model,principal);
+			return viewAllUsers(model, principal);
 		}
-		
 
 		usersService.deleteUser(username);
 
 		model.addAttribute("successMsg", "User " + username + " deleted successfully");
 
-		return viewAllUsers(model,principal);
+		return viewAllUsers(model, principal);
 	}
 
 	@RequestMapping(value = "/viewAllCustomers", method = RequestMethod.GET)
@@ -188,6 +195,43 @@ public class ActionsController {
 		model.addAttribute("allUsers", allUsers);
 
 		return ALL_USERS_PAGE;
+	}
+
+	@RequestMapping(value = "/chooseExportMethod", method = RequestMethod.GET)
+	public String chooseExportMethod(Model model, Principal principal) {
+
+		List<String> exportTypes = new ArrayList<>();
+		exportTypes.add("PDF");
+		exportTypes.add("CSV");
+
+		model.addAttribute("exportTypes", exportTypes);
+
+		return GENERATE_REPORT_PAGE;
+	}
+
+	@RequestMapping(value = "/generateReport", method = RequestMethod.GET)
+	public String generateReport(@RequestParam(value = "path", required = false) String path, @RequestParam( value = "pdf", required = false) boolean pdf,
+			@RequestParam(value = "csv",required = false) boolean csv, Model model, Principal principal) {
+
+		
+		if(!pdf && !csv){
+			model.addAttribute("errorMsg", "Must select either PDF/CSV");
+			return chooseExportMethod(model,principal);
+			
+		}
+		
+		ArrayList<Book> outOfStockBooks = booksService.getOutOfStockBooks();
+		
+		OperationResult exportResult = Exporter.generateReport(path, pdf, csv,outOfStockBooks);
+			
+		if(exportResult.getStatus().equals(Status.SUCCESS)){
+			model.addAttribute("successMsg", exportResult.getMessage());
+		}else{
+			model.addAttribute("errorMsg", exportResult.getMessage());
+		}
+	
+
+		return chooseExportMethod(model,principal);
 	}
 
 }

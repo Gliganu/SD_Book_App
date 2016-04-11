@@ -6,7 +6,7 @@
 
 
 <p>
-	<h3>${message}</h3>
+<h3>${message}</h3>
 </p>
 
 <h2 class="error">${errorMsg}</h2>
@@ -15,23 +15,30 @@
 
 <sec:authorize access="hasRole('ROLE_ADMIN')">
 	<p>
-		<a href=<c:url value="/viewAllCustomers "/>>View All Users (Admin) </a>
+		<a href=<c:url value="/chooseExportMethod"/>>Generate Report with out of stock books (Admin)
+		</a>
 	</p>
+
+	<p>
+		<a href=<c:url value="/viewAllCustomers "/>>View All Users (Admin)
+		</a>
+	</p>
+
 
 </sec:authorize>
 
 
 <sec:authorize access="isAuthenticated()">
 
-<p>
-	<a href=<c:url value="/books "/>>View Books</a>
-</p>
+	<p>
+		<a href=<c:url value="/books "/>>View Books</a>
+	</p>
 
 </sec:authorize>
 
 
 <sec:authorize access="!isAuthenticated()">
-	
+
 	<h2>Welcome !</h2>
 
 </sec:authorize>

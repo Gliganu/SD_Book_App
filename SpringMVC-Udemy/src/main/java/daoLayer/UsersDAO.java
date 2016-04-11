@@ -16,6 +16,8 @@ public interface UsersDAO {
 
 	List<User> getAllUsers();
 
+	void deleteAllUsers();
+	
 	User getUser(String username);
 	
 	void deleteUser(User user);

@@ -1,16 +1,21 @@
 package serviceLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import daoLayer.UserDetailsImpl;
 import daoLayer.UsersDAO;
 import domainLayer.User;
 
 @Service("usersService")
-public class UsersService {
+public class UsersService implements UserDetailsService {
 
 	@Autowired
 	private UsersDAO usersDao;
@@ -44,6 +49,19 @@ public class UsersService {
 	public User getUser(String username){
 		return usersDao.getUser(username);
 		
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		
+		User user = getUser(username);
+		
+		if(user == null){
+			throw new UsernameNotFoundException(username);
+		}
+		
+		return new UserDetailsImpl(user);
 	}
 
 }

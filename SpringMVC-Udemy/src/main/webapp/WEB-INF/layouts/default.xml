@@ -100,12 +100,23 @@
 		<put-attribute name="title" value="Books"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/tiles/updateBook.jsp"></put-attribute>
 	</definition>
+	
+	<definition name="createBook" extends="offers.base">
+		<put-attribute name="title" value="Books"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/createBook.jsp"></put-attribute>
+	</definition>
 		
 	<definition name="viewAllCustomers" extends="offers.base">
 		<put-attribute name="title" value="Books"></put-attribute>
 		<put-attribute name="content" value="/WEB-INF/tiles/viewAllCustomers.jsp"></put-attribute>
 	</definition>
 	
+		
+	<definition name="generateReport" extends="offers.base">
+		<put-attribute name="title" value="Export"></put-attribute>
+		<put-attribute name="content" value="/WEB-INF/tiles/generateReport.jsp"></put-attribute>
+	</definition>
+			
 		
 	<definition name="updateUserInfo" extends="offers.base">
 		<put-attribute name="title" value="Books"></put-attribute>

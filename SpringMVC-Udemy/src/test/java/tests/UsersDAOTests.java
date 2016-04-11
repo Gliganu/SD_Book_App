@@ -30,10 +30,6 @@ public class UsersDAOTests {
 	@Autowired
 	private UsersDAO usersDAO;
 
-	@Autowired
-	private DataSource dataSource;
-	
-	
 	User user1 = new User("admin", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
 	User user2 = new User("admin1", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
 	User user3 = new User("admin2", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
@@ -45,9 +41,7 @@ public class UsersDAOTests {
 
 	@Before
 	public void init() {
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-
-		jdbcTemplate.execute("DELETE FROM users");
+		usersDAO.deleteAllUsers();
 	}
 
 	@Test
@@ -62,7 +56,6 @@ public class UsersDAOTests {
 		
 		List<User> userList2= usersDAO.getAllUsers();
 		assertEquals("Four users should have been created and retrieved", 7, userList2.size());
-		 
 	}
 	
 	@Test
