@@ -50,14 +50,14 @@
 
 		<bean id="usersService" class="serviceLayer.UsersService"></bean>
 
-		<bean id="XMLConverter" class="daoLayer.XMLConverter">
+		<!-- <bean id="XMLConverter" class="daoLayer.XMLConverter">
 			<property name="marshaller" ref="castorMarshaller" />
 			<property name="unmarshaller" ref="castorMarshaller" />
 		</bean>
 
 		<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
-			<!-- <property name="mappingLocation" value="classpath:config/xmlMapping.xml" 
-				/> -->
+			<property name="mappingLocation" value="classpath:config/xmlMapping.xml" 
+				/>
 			<property name="targetClasses">
 				<array>
 					<value>domainLayer.UserBundle</value>
@@ -66,7 +66,7 @@
 					<value>domainLayer.Book</value>
 				</array>
 			</property>
-		</bean>
+		</bean> -->
 
 
 		<tx:annotation-driven />

@@ -8,6 +8,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -17,6 +19,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name = "users")
 @XmlRootElement(name = "user")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -3502744983433694888L;
@@ -24,30 +27,23 @@ public class User implements Serializable {
 	@Id
 	@Size(min = 3, max = 15)
 	@Pattern(regexp = "^\\w{3,}$")
-	@XmlAttribute
 	private String username;
 
 	@Pattern(regexp = "^\\S+$")
 	@Size(min = 4)
-	@XmlAttribute
 	private String password;
 
 	@NotEmpty
-	@XmlAttribute
 	private String name;
 
 	@NotNull
-	@XmlElement
 	private long personalCode;
 
 	@NotEmpty
-	@XmlAttribute
 	private String address;
 
-	@XmlAttribute
 	private String authority;
 
-	@XmlElement
 	private boolean enabled = false;
 
 	public User() {

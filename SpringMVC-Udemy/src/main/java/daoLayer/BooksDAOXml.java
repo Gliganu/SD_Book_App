@@ -1,9 +1,15 @@
 package daoLayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,15 +26,13 @@ import serviceLayer.ServiceUtils;
 @Component("booksDAO")
 public class BooksDAOXml implements BooksDAO {
 
-	@Autowired
-	XMLConverter xmlConverter;
-
 	private final String BOOKS_XML_PATH = "C:\\Users\\GligaBogdan\\Desktop\\xml\\books.xml";
 
 	@Override
 	public List<Book> getBooks(SearchQuery searchQuery) {
 
 		BookBundle bookBundle = getBookBundle();
+
 		List<Book> bookList = bookBundle.getBookList();
 
 		String searchedAuthor = searchQuery.getAuthor() == null ? "" : searchQuery.getAuthor();
@@ -44,16 +48,15 @@ public class BooksDAOXml implements BooksDAO {
 		return filteredBooks;
 
 	}
-	
+
 	@Override
 	public void deleteAllBooks() {
 		BookBundle bookBundle = getBookBundle();
 		bookBundle.setBookList(new ArrayList<>());
 		writeBookBundle(bookBundle);
-		
-		
+
 	}
-	
+
 	@Override
 	public OperationResult deleteBook(String id) {
 
@@ -86,7 +89,7 @@ public class BooksDAOXml implements BooksDAO {
 
 		return new OperationResult(Status.SUCCESS, "Book " + book.getTitle() + " created successfully");
 	}
-	
+
 	@Override
 	public OperationResult updateBook(Book book) {
 
@@ -108,15 +111,13 @@ public class BooksDAOXml implements BooksDAO {
 		return filteredBooks.size() != 0;
 	}
 
-
-
 	@Override
 	public Book findBook(String id) {
 
 		BookBundle bookBundle = getBookBundle();
 		List<Book> bookList = bookBundle.getBookList();
-		
-		List<Book> collect = bookList.stream().filter(book -> book.getId() == id).collect(Collectors.toList());
+
+		List<Book> collect = bookList.stream().filter(book -> book.getId().equals(id)).collect(Collectors.toList());
 
 		if (collect.isEmpty()) {
 			return null;
@@ -127,9 +128,14 @@ public class BooksDAOXml implements BooksDAO {
 
 	private BookBundle getBookBundle() {
 		try {
-			return (BookBundle) xmlConverter.convertFromXMLToObject(BOOKS_XML_PATH);
+			JAXBContext jaxbContext = JAXBContext.newInstance(BookBundle.class);
 
-		} catch (IOException e) {
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+			return (BookBundle) jaxbUnmarshaller.unmarshal(new File(BOOKS_XML_PATH));
+
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -139,10 +145,19 @@ public class BooksDAOXml implements BooksDAO {
 	private boolean writeBookBundle(BookBundle bookBundle) {
 
 		try {
-			xmlConverter.convertFromObjectToXML(bookBundle, BOOKS_XML_PATH);
+
+			JAXBContext jaxbContext = JAXBContext.newInstance(BookBundle.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			// Marshal the employees list in file
+			jaxbMarshaller.marshal(bookBundle, new File(BOOKS_XML_PATH));
+
 			return true;
 
-		} catch (IOException e) {
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

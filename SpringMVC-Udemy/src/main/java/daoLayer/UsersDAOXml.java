@@ -1,9 +1,15 @@
 package daoLayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,9 +21,6 @@ import domainLayer.UserBundle;
 @Component("usersDAO")
 public class UsersDAOXml implements UsersDAO {
 
-	@Autowired
-	XMLConverter xmlConverter;
-
 	private final String USERS_XML_PATH = "C:\\Users\\GligaBogdan\\Desktop\\xml\\users.xml";
 
 	@Override
@@ -26,8 +29,8 @@ public class UsersDAOXml implements UsersDAO {
 		UserBundle userBundle = getUserBundle();
 
 		List<User> userList = userBundle.getUserList();
-		
-		if(userList == null){
+
+		if (userList == null) {
 			userBundle.setUserList(new ArrayList<>());
 			userList = userBundle.getUserList();
 		}
@@ -46,10 +49,10 @@ public class UsersDAOXml implements UsersDAO {
 	}
 
 	private void deleteUserByUsername(String username) {
-		
+
 		UserBundle userBundle = getUserBundle();
 		List<User> userList = userBundle.getUserList();
-		
+
 		User user = getUser(username);
 
 		userList.remove(user);
@@ -62,9 +65,9 @@ public class UsersDAOXml implements UsersDAO {
 	public List<User> getAllUsers() {
 
 		UserBundle userBundle = getUserBundle();
-		
+
 		List<User> userList = userBundle.getUserList();
-		
+
 		return userList == null ? new ArrayList<>() : userList;
 
 	}
@@ -75,12 +78,13 @@ public class UsersDAOXml implements UsersDAO {
 		UserBundle userBundle = getUserBundle();
 		List<User> userList = userBundle.getUserList();
 
-		List<User> matchList = userList.stream().filter(user -> user.getUsername().equals(username)).collect(Collectors.toList());
-		
-		if(matchList.isEmpty()){
+		List<User> matchList = userList.stream().filter(user -> user.getUsername().equals(username))
+				.collect(Collectors.toList());
+
+		if (matchList.isEmpty()) {
 			return null;
 		}
-		
+
 		return matchList.get(0);
 
 	}
@@ -96,7 +100,6 @@ public class UsersDAOXml implements UsersDAO {
 
 		writeUserBundle(userBundle);
 
-
 	}
 
 	@Override
@@ -104,17 +107,20 @@ public class UsersDAOXml implements UsersDAO {
 		UserBundle userBundle = getUserBundle();
 		List<User> userList = userBundle.getUserList();
 
-		List<User> matchList = userList.stream().filter(user -> user.getUsername().equals(username)).collect(Collectors.toList());
-		
+		List<User> matchList = userList.stream().filter(user -> user.getUsername().equals(username))
+				.collect(Collectors.toList());
+
 		return matchList.size() != 0;
-		
+
 	}
 
 	private UserBundle getUserBundle() {
 		try {
-			return (UserBundle) xmlConverter.convertFromXMLToObject(USERS_XML_PATH);
+			JAXBContext jaxbContext = JAXBContext.newInstance(UserBundle.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			return (UserBundle) jaxbUnmarshaller.unmarshal(new File(USERS_XML_PATH));
 
-		} catch (IOException e) {
+		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -125,10 +131,18 @@ public class UsersDAOXml implements UsersDAO {
 	private boolean writeUserBundle(UserBundle userBundle) {
 
 		try {
-			xmlConverter.convertFromObjectToXML(userBundle, USERS_XML_PATH);
+
+			JAXBContext jaxbContext = JAXBContext.newInstance(UserBundle.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			// Marshal the employees list in file
+			jaxbMarshaller.marshal(userBundle, new File(USERS_XML_PATH));
+
 			return true;
 
-		} catch (IOException e) {
+		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -141,8 +155,7 @@ public class UsersDAOXml implements UsersDAO {
 		UserBundle userBundle = getUserBundle();
 		userBundle.setUserList(new ArrayList<>());
 		writeUserBundle(userBundle);
-		
-		
+
 	}
 
 }

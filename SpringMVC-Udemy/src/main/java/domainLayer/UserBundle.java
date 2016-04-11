@@ -5,23 +5,24 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "user-bundle")
+@XmlRootElement(name = "users")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class UserBundle {
 
-	@XmlElementWrapper(name="userList")
+	@XmlElement(name = "user")
 	private List<User> userList;
 
 	public UserBundle() {
 
 	}
 
-	public UserBundle(List<User> userList) {
-		this.userList = userList;
+	public UserBundle(List<User> user) {
+		this.userList = user;
 	}
 
+	
 	public List<User> getUserList() {
 		return userList;
 	}
@@ -54,6 +55,5 @@ public class UserBundle {
 			return false;
 		return true;
 	}
-
 	
 }

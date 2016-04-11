@@ -9,43 +9,40 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-//@XmlRootElement( name = "book" )
+@XmlRootElement(name = "book")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Book {
 
 	@Id
 	@NotEmpty
 	@Size(min=13,max=13)
 	@Pattern(regexp="^(0|[1-9][0-9]*)$")
-//	@XmlElement(name = "id")
 	private String id;
 
 	
 	@NotEmpty
-//	@XmlElement(name = "title")
 	private String title;
 
 	@NotEmpty
-//	@XmlElement(name = "genre")
 	private String genre;
 
 	@NotEmpty
-//	@XmlElement(name = "author")
 	private String author;
 
 	@NotNull
 	@Min(0)
-//	@XmlElement(name = "quantity")
 	private int quantity;
 
 	@NotNull
 	@Min(0)
-//	@XmlElement(name = "price")
 	private int price;
 
 	public Book() {
@@ -118,4 +115,55 @@ public class Book {
 				append(" Quantity: ").append(quantity).append(" Price: ").append(price).toString();
 		
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + price;
+		result = prime * result + quantity;
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Book other = (Book) obj;
+		if (author == null) {
+			if (other.author != null)
+				return false;
+		} else if (!author.equals(other.author))
+			return false;
+		if (genre == null) {
+			if (other.genre != null)
+				return false;
+		} else if (!genre.equals(other.genre))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (price != other.price)
+			return false;
+		if (quantity != other.quantity)
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		return true;
+	}
+	
+	
 }

@@ -34,7 +34,7 @@ public class BooksDAOTests {
 	@Autowired
 	private BooksDAO booksDAO;
 
-//	@Before
+	@Before
 	public void init() {
 		booksDAO.deleteAllBooks();
 	}
@@ -55,34 +55,49 @@ public class BooksDAOTests {
 	
 	@Test
 	public void testExists(){
-//		usersDAO.saveUser(user1);
-//		usersDAO.saveUser(user2);
-//		
-//		assertTrue("User should exist", usersDAO.exists(user1.getUsername()));
-//		assertTrue("User should exist", usersDAO.exists(user2.getUsername()));
+		
+		List<Book> randomBooks = ServiceUtils.getRandomBooks(2);
+		Book book1 = randomBooks.get(0);
+		Book book2 = randomBooks.get(1);
+		
+		booksDAO.createBook(book1);
+		booksDAO.createBook(book2);
+		
+		assertTrue("Book should exist", booksDAO.checkIdExists(book1.getId()));
+		assertTrue("Book should exist", booksDAO.checkIdExists(book2.getId()));
 
 	}
 	
 	@Test
 	public void testUpdate(){
-//		usersDAO.saveUser(user1);
-//		
-//		user1.setName("nameee");
-//		
-//		usersDAO.updateUser(user1);
-//		
-//		User retrieved = usersDAO.getUser(user1.getUsername());
-//		
-//		assertTrue(retrieved.getName().equals("nameee"));
+		
+		List<Book> randomBooks = ServiceUtils.getRandomBooks(2);
+		Book book1 = randomBooks.get(0);
+		
+		booksDAO.createBook(book1);
+		
+		book1.setGenre("ggg");
+		
+		booksDAO.updateBook(book1);
+		
+		List<Book> retrieved = booksDAO.getBooks(new SearchQuery("","ggg",""));
+		
+		assertTrue(retrieved.get(0).getGenre().equals("ggg"));
 	}
 
 	@Test
 	public void testDelete(){
-//		usersDAO.saveUser(user1);
-//		
-//		usersDAO.deleteUser(user1);
-//		List<User> offerList=usersDAO.getAllUsers();
-//		assertEquals("There should be no users",0,offerList.size());
+		
+		List<Book> randomBooks = ServiceUtils.getRandomBooks(2);
+		Book book1 = randomBooks.get(0);
+		
+		booksDAO.createBook(book1);
+		
+		booksDAO.deleteBook(book1.getId());
+		
+		List<Book> bookList= booksDAO.getBooks(new SearchQuery("","",""));
+		
+		assertEquals("There should be no books",0,bookList.size());
 		
 	}
 }
