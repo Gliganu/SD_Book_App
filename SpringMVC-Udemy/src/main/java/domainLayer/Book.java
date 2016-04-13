@@ -111,8 +111,8 @@ public class Book {
 		
 		StringBuilder builder = new StringBuilder();
 		
-		return builder.append("Id: ").append(id).append(" Title: ").append(title).append(" Genre: ").append(genre).append(" Author: ").append(author).
-				append(" Quantity: ").append(quantity).append(" Price: ").append(price).toString();
+		return builder.append("\n\nId: ").append(id).append("\nTitle: ").append(title).append("\nGenre: ").append(genre).append("\nAuthor: ").append(author).
+				append("\nPrice: ").append(price).toString();
 		
 	}
 

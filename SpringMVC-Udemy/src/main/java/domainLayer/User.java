@@ -37,11 +37,14 @@ public class User implements Serializable {
 	private String name;
 
 	@NotNull
-	private long personalCode;
+	@Size(min=13,max=13)
+	@Pattern(regexp="^(0|[1-9][0-9]*)$")
+	private String personalCode;
 
 	@NotEmpty
 	private String address;
 
+	@NotEmpty
 	private String authority;
 
 	private boolean enabled = false;
@@ -50,7 +53,7 @@ public class User implements Serializable {
 
 	}
 
-	public User(String username, String password, String name, long personalCode, String address, String authority,
+	public User(String username, String password, String name, String personalCode, String address, String authority,
 			boolean enabled) {
 
 		this.username = username;
@@ -102,11 +105,11 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public long getPersonalCode() {
+	public String getPersonalCode() {
 		return personalCode;
 	}
 
-	public void setPersonalCode(long personalCode) {
+	public void setPersonalCode(String personalCode) {
 		this.personalCode = personalCode;
 	}
 
@@ -133,7 +136,7 @@ public class User implements Serializable {
 		result = prime * result + (enabled ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + (int) (personalCode ^ (personalCode >>> 32));
+		result = prime * result + ((personalCode == null) ? 0 : personalCode.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -169,7 +172,10 @@ public class User implements Serializable {
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
-		if (personalCode != other.personalCode)
+		if (personalCode == null) {
+			if (other.personalCode != null)
+				return false;
+		} else if (!personalCode.equals(other.personalCode))
 			return false;
 		if (username == null) {
 			if (other.username != null)
@@ -178,5 +184,7 @@ public class User implements Serializable {
 			return false;
 		return true;
 	}
+
+	
 
 }

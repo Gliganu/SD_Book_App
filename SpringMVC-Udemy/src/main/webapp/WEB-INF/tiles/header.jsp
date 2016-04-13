@@ -9,15 +9,15 @@
 
 
 <sec:authorize access="hasRole('ROLE_ADMIN')">
-	<a class="title" href= <c:url value="/"/> > Bank App ( Admin ) </a> <br/> <br/>
+	<a class="title" href= <c:url value="/"/> > Book App ( Admin ) </a> <br/> <br/>
 </sec:authorize>
 
 <sec:authorize access="isAuthenticated()">
-	<a class="title" href= <c:url value="/"/> > Bank App </a> <br/> <br/>
+	<a class="title" href= <c:url value="/"/> > Book App </a> <br/> <br/>
 </sec:authorize>
 
 <sec:authorize access="!isAuthenticated()">
-	<a class="title" href= <c:url value="/"/> > Bank App </a> <br/> <br/>
+	<a class="title" href= <c:url value="/"/> > Book App </a> <br/> <br/>
 </sec:authorize>
 
 

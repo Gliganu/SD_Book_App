@@ -8,6 +8,10 @@
 
 <h2>All Users</h2>
 
+<h2 class="error">${errorMsg}</h2>
+<h2 class="valid">${successMsg}</h2>
+
+
 <table class="allCenter" border=1 width=100%>
 	<tr>
 		<th>Username</th>

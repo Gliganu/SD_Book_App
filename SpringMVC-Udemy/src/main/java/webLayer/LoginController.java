@@ -51,6 +51,7 @@ public class LoginController {
 		List<String> authorities = new ArrayList<>();
 		authorities.add("ROLE_USER");
 		authorities.add("ROLE_ADMIN");
+		model.addAttribute("authorities", authorities);
 		
 		model.addAttribute("user", new User());
 		return CREATE_NEW_ACCOUNT_PAGE;
@@ -61,6 +62,10 @@ public class LoginController {
 	public String createAccount(@Valid User user, BindingResult result, Model model) {
 
 		if (result.hasErrors()) {
+			List<String> authorities = new ArrayList<>();
+			authorities.add("ROLE_USER");
+			authorities.add("ROLE_ADMIN");
+			model.addAttribute("authorities", authorities);
 			return CREATE_NEW_ACCOUNT_PAGE;
 		} else {
 

@@ -12,6 +12,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import domainLayer.Book;
@@ -21,7 +22,11 @@ import domainLayer.UserBundle;
 @Component("usersDAO")
 public class UsersDAOXml implements UsersDAO {
 
-	private final String USERS_XML_PATH = "C:\\Users\\GligaBogdan\\Desktop\\xml\\users.xml";
+
+	private final String USERS_XML_PATHS_XML_PATH = "\\users.xml";
+
+	@Value("${xml.rootDir}")
+	private String[] rootDir;
 
 	@Override
 	public void saveUser(User user) {
@@ -118,7 +123,7 @@ public class UsersDAOXml implements UsersDAO {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(UserBundle.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			return (UserBundle) jaxbUnmarshaller.unmarshal(new File(USERS_XML_PATH));
+			return (UserBundle) jaxbUnmarshaller.unmarshal(new File(rootDir[0]+USERS_XML_PATHS_XML_PATH));
 
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
@@ -138,7 +143,7 @@ public class UsersDAOXml implements UsersDAO {
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 			// Marshal the employees list in file
-			jaxbMarshaller.marshal(userBundle, new File(USERS_XML_PATH));
+			jaxbMarshaller.marshal(userBundle, new File(rootDir[0]+USERS_XML_PATHS_XML_PATH));
 
 			return true;
 

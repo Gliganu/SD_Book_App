@@ -12,6 +12,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import domainLayer.Book;
@@ -26,8 +27,11 @@ import serviceLayer.ServiceUtils;
 @Component("booksDAO")
 public class BooksDAOXml implements BooksDAO {
 
-	private final String BOOKS_XML_PATH = "C:\\Users\\GligaBogdan\\Desktop\\xml\\books.xml";
+	private final String BOOKS_XML_PATH = "\\books.xml";
 
+	@Value("${xml.rootDir}")
+	private String[] rootDir;
+	  
 	@Override
 	public List<Book> getBooks(SearchQuery searchQuery) {
 
@@ -80,10 +84,16 @@ public class BooksDAOXml implements BooksDAO {
 	@Override
 	public OperationResult createBook(Book book) {
 
+		return createBookAtIndex(book, 0);
+	}
+	
+	@Override
+	public OperationResult createBookAtIndex(Book book, int index) {
+		
 		BookBundle bookBundle = getBookBundle();
 		List<Book> bookList = bookBundle.getBookList();
 
-		bookList.add(book);
+		bookList.add(index,book);
 
 		writeBookBundle(bookBundle);
 
@@ -93,8 +103,13 @@ public class BooksDAOXml implements BooksDAO {
 	@Override
 	public OperationResult updateBook(Book book) {
 
+		BookBundle bookBundle = getBookBundle();
+		List<Book> bookList = bookBundle.getBookList();
+		
+		int index = bookList.indexOf(findBook(book.getId()));
+		
 		deleteBook(book.getId());
-		createBook(book);
+		createBookAtIndex(book, index);
 
 		return new OperationResult(Status.SUCCESS, "Book " + book.getTitle() + " updated successfully");
 	}
@@ -132,7 +147,7 @@ public class BooksDAOXml implements BooksDAO {
 
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			return (BookBundle) jaxbUnmarshaller.unmarshal(new File(BOOKS_XML_PATH));
+			return (BookBundle) jaxbUnmarshaller.unmarshal(new File(rootDir[0]+BOOKS_XML_PATH));
 
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
@@ -152,7 +167,7 @@ public class BooksDAOXml implements BooksDAO {
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 			// Marshal the employees list in file
-			jaxbMarshaller.marshal(bookBundle, new File(BOOKS_XML_PATH));
+			jaxbMarshaller.marshal(bookBundle, new File(rootDir[0]+BOOKS_XML_PATH));
 
 			return true;
 
@@ -163,5 +178,7 @@ public class BooksDAOXml implements BooksDAO {
 
 		return false;
 	}
+
+	
 
 }

@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import daoLayer.UsersDAO;
 import domainLayer.User;
+import serviceLayer.ServiceUtils;
 
 @ActiveProfiles("dev")
 @ContextConfiguration(locations = {
@@ -30,13 +31,16 @@ public class UsersDAOTests {
 	@Autowired
 	private UsersDAO usersDAO;
 
-	User user1 = new User("admin", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
-	User user2 = new User("admin1", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
-	User user3 = new User("admin2", "test", "Andreea Muresan", 19357621, "Ceahlau 14", "ROLE_ADMIN", true);
-	User user4 = new User("bogdan", "test", "Bogdan Gliga", 19958692, "Giulesti 10", "ROLE_USER", true);
-	User user5 = new User("bogdan1", "test", "Bogdan Gliga", 19958692, "Giulesti 10", "ROLE_USER", true);
-	User user6 = new User("bogdan2", "test", "Bogdan Gliga", 19958692, "Giulesti 10", "ROLE_USER", true);
-	User user7 = new User("bogdan3", "test", "Bogdan Gliga", 19958692, "Giulesti 10", "ROLE_USER", true);
+	User user1 = new User("mihai", "test", "Mihai Pop", ServiceUtils.getRandomCNP(), "Dorobantilor 109", "ROLE_USER", true);
+	User user2 = new User("admin", "test", "Andreea Muresan", ServiceUtils.getRandomCNP(), "Ceahlau 14", "ROLE_ADMIN", true);
+	User user3 = new User("bogdan", "test", "Bogdan Gliga", ServiceUtils.getRandomCNP(), "Giulesti 10", "ROLE_USER", true);
+	User user4 = new User("administrator", "test", "Flaviu Stoican", ServiceUtils.getRandomCNP(), "Pitestu 140", "ROLE_ADMIN", true);
+	User user5 = new User("mircea", "test", "Mircea Nitu", ServiceUtils.getRandomCNP(), "Mihai Viteazu 12", "ROLE_USER", true);
+	User user6 = new User("oana", "test", "Oana Blaga", ServiceUtils.getRandomCNP(), "Fanfara 2", "ROLE_USER", true);
+	User user7 = new User("cristi", "test", "Cristi Mincea", ServiceUtils.getRandomCNP(), "Mircea cel Batran 103", "ROLE_USER", true);
+	User user8 = new User("andreea", "test", "Andreea Davidescu", ServiceUtils.getRandomCNP(), "Carmen 130", "ROLE_USER", true);
+	User user9 = new User("stefan", "test", "Stefan Fodor", ServiceUtils.getRandomCNP(), "Dunarii 210", "ROLE_USER", true);
+	User user10 = new User("iulia", "test", "Iulia Lazar", ServiceUtils.getRandomCNP(), "Calarasi 40", "ROLE_USER", true);
 
 
 	@Before
@@ -53,9 +57,12 @@ public class UsersDAOTests {
 		usersDAO.saveUser(user5);
 		usersDAO.saveUser(user6);
 		usersDAO.saveUser(user7);
+		usersDAO.saveUser(user8);
+		usersDAO.saveUser(user9);
+		usersDAO.saveUser(user10);
 		
 		List<User> userList2= usersDAO.getAllUsers();
-		assertEquals("Four users should have been created and retrieved", 7, userList2.size());
+		assertEquals("Ten users should have been created and retrieved", 10, userList2.size());
 	}
 	
 	@Test

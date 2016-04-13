@@ -42,7 +42,7 @@ public class BooksDAOTests {
 	@Test
 	public void testCreateRetrive(){
 		
-		List<Book> randomBooks = ServiceUtils.getRandomBooks(10);
+		List<Book> randomBooks = ServiceUtils.getInitBooks();
 		
 		for(Book book: randomBooks){
 			booksDAO.createBook(book);
@@ -50,7 +50,7 @@ public class BooksDAOTests {
 		
 		
 		List<Book> bookList= booksDAO.getBooks(new SearchQuery());
-		assertEquals("Ten users should have been created and retrieved", 10, bookList.size());
+		assertEquals("Ten users should have been created and retrieved", 12, bookList.size());
 	}
 	
 	@Test

@@ -18,6 +18,8 @@ public interface BooksDAO {
 	OperationResult deleteBook(String id);
 
 	OperationResult createBook(Book book);
+	
+	OperationResult createBookAtIndex(Book book, int index);
 
 	OperationResult updateBook(Book book);
 

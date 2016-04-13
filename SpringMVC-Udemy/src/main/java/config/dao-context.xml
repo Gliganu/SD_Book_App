@@ -36,24 +36,6 @@
 	<bean id="exceptionTranslator"
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"></bean>
 	
-	<bean id="XMLConverter" class="daoLayer.XMLConverter">
-		<property name="marshaller" ref="castorMarshaller" />
-		<property name="unmarshaller" ref="castorMarshaller" />
-	</bean>
-	
-	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
-			<!-- <property name="mappingLocation" value="classpath:config/xmlMapping.xml" 
-				/> -->
-			<property name="targetClasses">
-				<array>
-					<value>domainLayer.UserBundle</value>
-					<value>domainLayer.User</value>
-					<value>domainLayer.BookBundle</value>
-					<value>domainLayer.Book</value>
-				</array>
-			</property>
-		</bean>
-
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
@@ -61,7 +43,6 @@
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 	</bean>
-
 
 
 	<bean
